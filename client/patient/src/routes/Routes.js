@@ -11,6 +11,7 @@ import Notifications from "../pages/Notificatons/Notifications";
 import Settings from "../pages/Settings/Settings";
 import ForgetPasswordOtp from "../login-model/forget-password/OtpCode";
 import UpdatePassword from "../pages/Settings/UpdatePassword";
+import NewDashboard from "../pages/NewDashboard/NewDashboard";
 
 const RoutesStack = () => {
   return (
@@ -28,6 +29,7 @@ const RoutesStack = () => {
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/change-password" element={<UpdatePassword />} />
+          <Route path="/new-dashboard" element={<NewDashboard />} />
           <Route path="*" element={<ErrorPage />} />
         </Routes>
       </div>
