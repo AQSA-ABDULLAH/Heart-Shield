@@ -25,3 +25,13 @@ yarn-error.log*
 
 #Database URL
 config.env
+
+
+heart_disease_ecg Images/images/
+heart_disease_ecg Images/data/
+
+
+
+
+# Snyk Security Extension - AI Rules (auto-generated)
+.github/instructions/snyk_rules.instructions.md
