@@ -1,8 +1,8 @@
 import React from "react";
-import HomeSection1 from "../components/section/home/section1/HomeSection1";
-import HomeSection2 from "../components/section/home/section2/HomeSection2";
-import Header from "../components/section/home/header/Header";
-import Footer from "../components/section/home/footer/Footer";
+import HomeSection1 from "../../components/section/home/section1/HomeSection1";
+import HomeSection2 from "../../components/section/home/section2/HomeSection2";
+import Header from "../../components/section/home/header/Header";
+import Footer from "../../components/section/home/footer/Footer";
 
 function NewDashboard() {
   return (

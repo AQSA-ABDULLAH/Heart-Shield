@@ -18,7 +18,7 @@ const GlobalRoute = () => {
   const location = useLocation();
 
   useEffect(() => {
-    const publicRoutes = ["/", "/login", "/signup", "/forget-password-otp", "/about-us"];
+    const publicRoutes = ["/", "/login", "/signup", "/forget-password-otp", "/about-us", "/new-dashboard"];
 
     if (!isSignedIn) {
       if (!publicRoutes.includes(location.pathname)) {

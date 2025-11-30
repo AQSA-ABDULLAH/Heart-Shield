@@ -32,11 +32,11 @@ const Sidebar = ({ openSidebar, setOpenSidebar }) => {
         dispatch(setSignedOut());
 
         Swal.fire("Logged Out!", "You have been logged out.", "success").then(
-          () => {
-            setTimeout(() => {
-              window.location.href = `${process.env.REACT_APP_Patient_URL}/new-dashboard`;
-            }, 50);
-          }
+          // () => {
+          //   setTimeout(() => {
+          //     window.location.href = `${process.env.REACT_APP_Patient_URL}/new-dashboard`;
+          //   }, 50);
+          // }
         );
       }
     });

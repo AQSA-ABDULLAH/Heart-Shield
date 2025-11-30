@@ -29,7 +29,7 @@ const RoutesStack = () => {
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/change-password" element={<UpdatePassword />} />
-          <Route path="/new-dashboard" element={<NewDashboard />} />
+          <Route path="/new-dashboard" element={<Home />} />
           <Route path="*" element={<ErrorPage />} />
         </Routes>
       </div>
