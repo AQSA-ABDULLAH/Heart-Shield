@@ -10,13 +10,12 @@ const GlobalRoute = () => {
   const isSignedIn = useSelector((state) => state.auth.isSignedIn);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!isSignedIn) {
-      navigate('/login'); 
-    } else {
-      navigate('/'); 
-    }
-  }, [isSignedIn, navigate]);
+ useEffect(() => {
+  if (!isSignedIn && window.location.pathname !== '/login') {
+    navigate('/login');
+  }
+}, [isSignedIn, navigate]);
+
 
   return (
     <>
