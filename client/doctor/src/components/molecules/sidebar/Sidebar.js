@@ -7,9 +7,11 @@ import styles from "./SidebarStyles.module.css";
 import Swal from "sweetalert2";
 import { useDispatch } from "react-redux";
 import { setSignedOut } from "../../../redux/containers/auth/actions";
+import { useNavigate } from "react-router-dom";
 
 const Sidebar = ({ openSidebar, setOpenSidebar }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleLinkClick = () => {
     if (openSidebar) {
       setOpenSidebar(false);
@@ -28,7 +30,14 @@ const Sidebar = ({ openSidebar, setOpenSidebar }) => {
     }).then((result) => {
       if (result.isConfirmed) {
         dispatch(setSignedOut());
-        Swal.fire("Logged Out!", "You have been logged out.", "success");
+
+        Swal.fire("Logged Out!", "You have been logged out.", "success").then(
+          () => {
+            setTimeout(() => {
+              navigate(process.env.REACT_APP_Patient_URL);
+            }, 50);
+          }
+        );
       }
     });
   };
@@ -49,7 +58,7 @@ const Sidebar = ({ openSidebar, setOpenSidebar }) => {
 
         <button className={styles.sideLink} onClick={() => logout()}>
           <div>
-           <FaSignOutAlt size={20} />
+            <FaSignOutAlt size={20} />
           </div>
           <p className={styles.logout}>logout</p>
         </button>
