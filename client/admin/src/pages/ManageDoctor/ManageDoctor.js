@@ -12,7 +12,7 @@ const ManageDoctor = () => {
     const params = new URLSearchParams(location.search);
     const tabName = params.get("tab");
     if (tabName == null) {
-      document.title = "Trips management";
+      document.title = "Doctor Managment";
     }
     if (tabName) {
       const tabIndex = Tab.findIndex(

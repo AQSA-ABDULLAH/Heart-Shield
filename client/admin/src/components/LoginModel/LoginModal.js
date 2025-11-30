@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Button from "../atoms/buttons/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { signUpWithEmail } from "../../redux/containers/auth/actions";
+import { useNavigate } from "react-router-dom";
 
 function LoginModal() {
   const [email, setEmail] = useState();
@@ -10,11 +11,19 @@ function LoginModal() {
   const [isEmailValid, setEmailValid] = useState(true);
   const [isPasswordValid, setPasswordValid] = useState(true);
   const { loading, error, payload } = useSelector((state) => state?.auth);
+   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const togglePasswordVisibility = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
+
+  useEffect(() => {
+    if (payload) {
+      navigate("/"); // Redirect to dashboard on successful login
+    }
+  }, [payload, navigate]);
+
 
   const handleSubmit = (e) => {
     e.preventDefault();

@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 
 const Sidebar = ({ openSidebar, setOpenSidebar }) => {
   const dispatch = useDispatch();
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const handleLinkClick = () => {
     if (openSidebar) {
       setOpenSidebar(false);
@@ -34,7 +34,7 @@ const Sidebar = ({ openSidebar, setOpenSidebar }) => {
         Swal.fire("Logged Out!", "You have been logged out.", "success").then(
           () => {
             setTimeout(() => {
-              navigate(process.env.REACT_APP_Patient_URL);
+              window.location.href = process.env.REACT_APP_Patient_URL;
             }, 50);
           }
         );

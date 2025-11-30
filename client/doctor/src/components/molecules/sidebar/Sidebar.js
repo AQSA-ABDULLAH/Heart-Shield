@@ -34,7 +34,7 @@ const Sidebar = ({ openSidebar, setOpenSidebar }) => {
         Swal.fire("Logged Out!", "You have been logged out.", "success").then(
           () => {
             setTimeout(() => {
-              navigate(process.env.REACT_APP_Patient_URL);
+              window.location.href = process.env.REACT_APP_Patient_URL;
             }, 50);
           }
         );

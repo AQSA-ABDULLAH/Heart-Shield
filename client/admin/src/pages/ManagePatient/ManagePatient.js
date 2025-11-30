@@ -13,7 +13,7 @@ const ManagePatient = () => {
     const params = new URLSearchParams(location.search);
     const tabName = params.get("tab");
     if (tabName == null) {
-      document.title = "Trips management"
+      document.title = "Patient management"
     }
     if (tabName) {
       const tabIndex = Tab.findIndex(tab => tab.text.toLowerCase() === tabName.toLowerCase());
