@@ -18,7 +18,7 @@ function HomeSection1() {
 
         {/* Stats */}
         <div className="flex gap-[24px] mt-[36px]">
-          <StatsCard percentage="98%" label="Accuracy" />
+          <StatsCard percentage="90%" label="Accuracy" />
           <StatsCard percentage="24/7" label="Monitoring" />
           <StatsCard percentage="10K+" label="Users Served" />
         </div>

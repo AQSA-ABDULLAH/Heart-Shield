@@ -44,7 +44,7 @@ export default function PrivacyPolicyModal({ isOpen = false, onClose = () => {} 
         </div>
 
         <div className="p-6 max-h-[60vh] overflow-y-auto text-sm text-gray-700 space-y-4">
-          <p className="text-gray-600">Below are example points for a Privacy Policy — replace or expand these to match your app's real policy.</p>
+          <p className="text-gray-600">This section explains our Privacy Policy and outlines how your personal information is collected, used, stored, and protected:</p>
 
           <ul className="list-disc pl-5 space-y-2">
             <li><strong>Data Collection:</strong> We collect basic profile information (name, email, phone) that you provide when you register or update your profile.</li>
@@ -54,16 +54,10 @@ export default function PrivacyPolicyModal({ isOpen = false, onClose = () => {} 
             <li><strong>Security:</strong> We use administrative, technical, and physical safeguards to protect user information, but no system is 100% secure.</li>
             <li><strong>User Rights:</strong> You can request access, correction, or deletion of your personal data. Contact support for assistance.</li>
             <li><strong>Cookies & Tracking:</strong> We use cookies and similar technologies for session management and analytics. You can disable cookies in your browser, but some features may stop working.</li>
-            <li><strong>Children:</strong> Our services are not intended for children under 13. If we learn we collected data from a child without consent, we will take steps to delete it.</li>
+            <li><strong>Children:</strong> Our services are not intended for children under 18. If we learn we collected data from a child without consent, we will take steps to delete it.</li>
             <li><strong>Changes to Policy:</strong> We may update this policy from time to time. We will notify users through the app or email when significant changes occur.</li>
-            <li><strong>Contact:</strong> For questions or data requests, reach out to <code>privacy@yourapp.com</code> (replace with your support address).</li>
+            <li><strong>Contact:</strong> For questions or data requests, reach out to <code>heartshield9@gmail.com</code> (replace with your support address).</li>
           </ul>
-
-          <hr className="my-2" />
-
-          <div className="bg-gray-50 p-3 rounded-md text-xs text-gray-600">
-            <strong>Note:</strong> These are placeholder points for demonstration. Make sure to replace them with legally reviewed content appropriate for your jurisdiction and app.
-          </div>
         </div>
 
         <div className="flex items-center justify-end gap-3 px-6 py-4 border-t">
