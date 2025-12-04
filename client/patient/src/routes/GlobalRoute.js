@@ -47,8 +47,20 @@ const GlobalRoute = () => {
     <>
       {isSignedIn ? (
         <>
-          <RoutesStack openSidebar={openSidebar} setOpenSidebar={setOpenSidebar} />
-          <Sidebar openSidebar={openSidebar} setOpenSidebar={setOpenSidebar} />
+          {/* Note: Agar apka RoutesStack "/" path handle nahi karta, 
+            to apko yahan check lagana parega ke "/" par Home component dikhaye.
+            Filhal main assume kar raha hu RoutesStack apna kaam karega.
+          */}
+          {location.pathname === "/" ? (
+             <Home /> 
+          ) : (
+             <RoutesStack openSidebar={openSidebar} setOpenSidebar={setOpenSidebar} />
+          )}
+
+          {/* 👇 CHANGE: Sidebar sirf tab show hogi jab path "/" NAHI hoga */}
+          {location.pathname !== "/" && (
+            <Sidebar openSidebar={openSidebar} setOpenSidebar={setOpenSidebar} />
+          )}
         </>
       ) : (
         <Routes>
