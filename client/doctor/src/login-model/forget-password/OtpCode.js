@@ -18,7 +18,7 @@ const ForgetPasswordOtp = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.post(`${API_URL}/api/user/forget-password`, { email });
+      await axios.post(`${API_URL}/api/doctor/forget-password`, { email });
       setShowOtp(true);
       Swal.fire("Email Sent", "Check your email for the OTP.", "success");
     } catch (error) {
@@ -48,7 +48,7 @@ const ForgetPasswordOtp = () => {
     }
 
     try {
-      const response = await axios.post(`${API_URL}/api/user/reset-password`, {
+      const response = await axios.post(`${API_URL}/api/doctor/reset-password`, {
         email,
         otp: enteredOtp,
       });
@@ -71,7 +71,7 @@ const ForgetPasswordOtp = () => {
     }
 
     try {
-      const response = await axios.patch(`${API_URL}/api/user/update-password`, {
+      const response = await axios.patch(`${API_URL}/api/doctor/update-password`, {
         email,
         password,
         confirmPassword,

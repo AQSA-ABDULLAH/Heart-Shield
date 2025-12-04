@@ -4,6 +4,7 @@ const { doctorLogin } = require('../controllers/doctor/doctorLogin');
 const ApprovedController = require("../controllers/doctor/adminApproved");
 const { getApprovedDoctors } = require('../controllers/consult-doctor/ConsultController');
 const { getDoctorCases } = require('../controllers/consult-doctor/doctorCaseController');
+const { DoctorForgetPasswordController } = require('../controllers/doctor/doctorForgetPassword');
 const router = express.Router();
 require("../db/connection")
 
@@ -19,6 +20,9 @@ router.get('/review-cases/:doctorId', getDoctorCases);
 router.put("/update-profile/:doctorId", DoctorController.updateProfile);
 router.put("/change-password/:doctorId", DoctorController.changePassword);
 router.delete("/delete-account/:doctorId", DoctorController.deleteAccount);
+router.post("/forget-password", DoctorForgetPasswordController.forgetPassword);
+router.post("/reset-password", DoctorForgetPasswordController.resetPassword);
+router.patch("/update-password", DoctorForgetPasswordController.updatePassword);
 
 router.post("/mail_verification/:id",DoctorController.mailVerification )
 // "http://localhost:3000/mail-verification?id='+savedUser._id+'"
