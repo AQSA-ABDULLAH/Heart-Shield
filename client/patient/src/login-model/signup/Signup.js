@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import * as validate from "../../utils/validations/Validations";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2"; // 1. Import SweetAlert
 
 const Signup = () => {
   const API_URL = process.env.REACT_APP_API_URL;
@@ -58,22 +59,41 @@ const Signup = () => {
     }
 
     const hasError = Object.values(errors).some((err) => err);
+    
     if (!hasError) {
       axios.post(`${API_URL}/api/user/patient_signUp`, formData)
         .then((response) => {
-          console.log("API response:", response.data);
-          navigate('/login');
+          // 2. Success hone par SweetAlert show karein
+          Swal.fire({
+            title: "Success!",
+            text: "Wait for admin approval",
+            icon: "success",
+            confirmButtonColor: "#580101", // Aapke theme ka color
+            confirmButtonText: "OK"
+          }).then((result) => {
+            // Jab user OK click karega tab login page par jayega
+            if (result.isConfirmed) {
+              navigate('/login');
+            }
+          });
         })
         .catch((error) => {
           console.error("Error:", error);
+          // Optional: Error ka alert bhi dikha sakte hain
+          Swal.fire({
+            title: "Error!",
+            text: error.response?.data?.message || "Registration failed",
+            icon: "error",
+            confirmButtonColor: "#580101"
+          });
         });
     }
   };
 
   return (
     <div className="min-h-screen flex bg-[#2D0101]">
-{/* Left Side (Image + Text) */}
-<div className="hidden md:flex relative w-[60%] bg-[#5c4444] text-white">
+      {/* Left Side (Image + Text) */}
+      <div className="hidden md:flex relative w-[60%] bg-[#5c4444] text-white">
         <img
           src="/assest/patient signup.png"
           alt="doctors-image"
@@ -82,7 +102,7 @@ const Signup = () => {
         <div className="absolute z-10 bottom-[61px] px-[40px]">
           <h1 className="text-[32px] font-bold mb-4 leading-[48px]">HeartShield</h1>
           <p className='text-[14px] leading-[27px] tracking-[1px] w-[220px]'>
-          Take control of your heart health with advanced AI monitoring
+            Take control of your heart health with advanced AI monitoring
           </p>
         </div>
       </div>
@@ -103,7 +123,7 @@ const Signup = () => {
               placeholder="Enter your full name"
               className="w-full px-4 py-2 bg-[#722626] text-white rounded border border-transparent focus:outline-none focus:border-[#580101]"
             />
-            {errors.firstName && <p className="text-red-500 text-sm">{errors.firstName}</p>}
+            {errors.fullName && <p className="text-red-500 text-sm">{errors.fullName}</p>}
           </div>
 
           <div>
@@ -179,7 +199,12 @@ const Signup = () => {
 
         <p className="text-sm mt-4 text-center text-gray-300">
           Already have an account?{" "}
-          <span className="text-[#FF4444] cursor-pointer">Sign in</span>
+          <span 
+            className="text-[#FF4444] cursor-pointer"
+            onClick={() => navigate('/login')} 
+          >
+            Sign in
+          </span>
         </p>
       </div>
     </div>

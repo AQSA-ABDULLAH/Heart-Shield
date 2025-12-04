@@ -77,7 +77,7 @@ function LoginModal() {
         <div className="w-full max-w-md space-y-[30px]">
           <h2 className="text-[32px] font-bold leading-[48px]">Doctor Login</h2>
           <p className="text-[16px] text-[#999] leading-[24px]">
-            Please enter your credentials to access admin panel
+            Please enter your credentials to access doctor panel
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-5">
