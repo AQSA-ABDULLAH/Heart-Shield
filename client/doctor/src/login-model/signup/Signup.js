@@ -2,13 +2,15 @@ import React, { useRef, useState } from "react";
 import axios from "axios";
 import * as validate from "../../utils/validations/Validations";
 import { useNavigate, Link } from "react-router-dom";
+// 1. SweetAlert ko import karein
+import Swal from "sweetalert2";
 
 const Signup = () => {
   const API_URL = process.env.REACT_APP_API_URL;
   const inputRef = useRef(null);
   const navigate = useNavigate();
 
-  const [licenseName, setLicenseName] = useState(""); // for showing file name
+  const [licenseName, setLicenseName] = useState("");
   const [base64Image, setBase64Image] = useState("");
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
@@ -56,13 +58,12 @@ const Signup = () => {
 
       const reader = new FileReader();
       reader.onloadend = () => {
-        setBase64Image(reader.result); // base64 string with mime prefix
+        setBase64Image(reader.result);
       };
       reader.readAsDataURL(file);
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      // 5 MB limit
+    if (file && file.size > 5 * 1024 * 1024) {
       alert("File size exceeds 5MB limit.");
       return;
     }
@@ -71,7 +72,6 @@ const Signup = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Final password confirm validation before submit
     if (formData.password !== formData.confirmPassword) {
       setErrors((prev) => ({
         ...prev,
@@ -80,11 +80,9 @@ const Signup = () => {
       return;
     }
 
-    // Check for existing validation errors
     const hasError = Object.values(errors).some((err) => err);
     if (hasError) return;
 
-    // Check required license base64 image exists
     if (!base64Image) {
       setErrors((prev) => ({
         ...prev,
@@ -95,7 +93,6 @@ const Signup = () => {
       setErrors((prev) => ({ ...prev, license: "" }));
     }
 
-    // Send form data + license base64 string to backend
     axios
       .post(`${API_URL}/api/doctor/doctor_signUp`, {
         ...formData,
@@ -103,10 +100,30 @@ const Signup = () => {
       })
       .then((response) => {
         console.log("API response:", response.data);
-        navigate("/login");
+
+        // 2. Sweet Alert Implementation here
+        Swal.fire({
+          title: "Registration Successful!",
+          text: "Wait for admin approval",
+          icon: "success",
+          confirmButtonColor: "#580101", // Aapki theme ka color
+          confirmButtonText: "OK",
+        }).then((result) => {
+          // Alert close hone ke baad login par bhejein
+          if (result.isConfirmed) {
+            navigate("/login");
+          }
+        });
       })
       .catch((error) => {
         console.error("Error:", error);
+        // Optional: Error ke liye bhi alert laga sakte hain
+        Swal.fire({
+          title: "Error!",
+          text: "Something went wrong. Please try again.",
+          icon: "error",
+          confirmButtonColor: "#580101",
+        });
       });
   };
 
@@ -167,7 +184,6 @@ const Signup = () => {
           <div>
             <label className="block mb-[6px]">Medical License Upload</label>
 
-            {/* Styled button to trigger file input */}
             <div
               onClick={handleImage}
               className="w-full px-4 py-2 bg-[#722626] text-white rounded border border-transparent text-center cursor-pointer hover:bg-[#8d3b3b]"
@@ -175,7 +191,6 @@ const Signup = () => {
               {licenseName || "Upload Medical License"}
             </div>
 
-            {/* Hidden file input */}
             <input
               type="file"
               id="license"
