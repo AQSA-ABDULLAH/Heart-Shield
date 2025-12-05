@@ -54,9 +54,9 @@ export default function PrivacyPolicyModal({ isOpen = false, onClose = () => {} 
             <li><strong>Security:</strong> We use administrative, technical, and physical safeguards to protect user information, but no system is 100% secure.</li>
             <li><strong>User Rights:</strong> You can request access, correction, or deletion of your personal data. Contact support for assistance.</li>
             <li><strong>Cookies & Tracking:</strong> We use cookies and similar technologies for session management and analytics. You can disable cookies in your browser, but some features may stop working.</li>
-            <li><strong>Children:</strong> Our services are not intended for children under 18. If we learn we collected data from a child without consent, we will take steps to delete it.</li>
+            <li><strong>Children:</strong> Our services are not intended for children under 18. </li>
             <li><strong>Changes to Policy:</strong> We may update this policy from time to time. We will notify users through the app or email when significant changes occur.</li>
-            <li><strong>Contact:</strong> For questions or data requests, reach out to <code>heartshield9@gmail.com</code> (replace with your support address).</li>
+            <li><strong>Contact:</strong> For questions or data requests, reach out to <code>heartshield9@gmail.com</code> </li>
           </ul>
         </div>
 

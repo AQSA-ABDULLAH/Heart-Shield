@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
+import { pdf } from "@react-pdf/renderer"; // IMPORT PDF GENERATOR
 import DoctorConsultModal from "./DoctorConsultModal";
 import ViewPrescriptionModal from "./ViewPrescriptionModal";
+import HeartShieldReportPDF from "./HeartShieldReportPDF"; // IMPORT YOUR DESIGN
 
 // ------------------ TOKEN DECODER ------------------
 const getUserIdFromToken = () => {
@@ -11,10 +13,7 @@ const getUserIdFromToken = () => {
     const payloadBase64Url = token.split(".")[1];
     if (!payloadBase64Url) return null;
 
-    let payloadBase64 = payloadBase64Url
-      .replace(/-/g, "+")
-      .replace(/_/g, "/");
-
+    let payloadBase64 = payloadBase64Url.replace(/-/g, "+").replace(/_/g, "/");
     payloadBase64 = payloadBase64.padEnd(
       payloadBase64.length + ((4 - (payloadBase64.length % 4)) % 4),
       "="
@@ -49,9 +48,8 @@ const formatReportData = (record) => {
   let risk = "Pending";
   let color = "bg-yellow-100 text-yellow-600";
 
-  if (record.analysisResult.status === "Completed") {
+  if (record.analysisResult?.status === "Completed") {
     const riskValue = record.analysisResult.Overall_Risk;
-
     if (riskValue > 0.5) {
       risk = "High Risk";
       color = "bg-red-100 text-red-600";
@@ -59,7 +57,7 @@ const formatReportData = (record) => {
       risk = "Low Risk";
       color = "bg-green-100 text-green-600";
     }
-  } else if (record.analysisResult.status === "Failed") {
+  } else if (record.analysisResult?.status === "Failed") {
     risk = "Failed";
     color = "bg-gray-100 text-gray-600";
   }
@@ -70,9 +68,8 @@ const formatReportData = (record) => {
     time,
     risk,
     color,
-
     consultationStatus: record.consultationStatus || "Pending",
-    prescriptionText: record.prescriptionNotes || null, 
+    prescriptionText: record.prescriptionNotes || null,
   };
 };
 
@@ -89,15 +86,13 @@ export default function ReportsTable() {
   const [isPrescriptionModalOpen, setIsPrescriptionModalOpen] = useState(false);
   const [selectedPrescriptionText, setSelectedPrescriptionText] = useState(null);
 
-  // ------------------ CONSULT HANDLER ------------------
+  // ------------------ HANDLERS ------------------
   const handleConsult = (reportId) => {
     setSelectedReportId(reportId);
     setIsConsultModalOpen(true);
   };
 
-  // ADD HANDLER FOR VIEWING PRESCRIPTION
   const handleViewPrescription = (text) => {
-    console.log("Prescription Text:", text);
     setSelectedPrescriptionText(text);
     setIsPrescriptionModalOpen(true);
   };
@@ -134,34 +129,32 @@ export default function ReportsTable() {
     fetchReports();
   }, []);
 
-  // ------------------ DOWNLOAD PDF ------------------
+  // ------------------ DOWNLOAD PDF (GENERATED ON FRONTEND) ------------------
   const handleDownload = async (reportId) => {
     setDownloadingReportId(reportId);
 
     try {
-      const token = localStorage.getItem("access_token");
-      const apiUrl = process.env.REACT_APP_API_URL;
+      // 1. Get the specific report data
+      const reportData = reports.find((r) => r.id === reportId);
+      if (!reportData) throw new Error("Report not found");
 
-      const response = await fetch(`${apiUrl}/api/ecg/report/${reportId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      // 2. Generate PDF Blob using the Design Component
+      const blob = await pdf(<HeartShieldReportPDF data={reportData} />).toBlob();
 
-      if (!response.ok) throw new Error("Failed to download PDF");
-
-      const blob = await response.blob();
+      // 3. Create URL and Trigger Download
       const url = window.URL.createObjectURL(blob);
-
       const a = document.createElement("a");
       a.href = url;
-      a.download = `HeartShield-Report-${reportId}.pdf`;
-      a.style.display = "none";
+      a.download = `HeartShield-Report-${reportId.slice(-6)}.pdf`;
       document.body.appendChild(a);
-
       a.click();
+
+      // 4. Cleanup
       window.URL.revokeObjectURL(url);
       a.remove();
     } catch (err) {
-      console.error("Download error:", err);
+      console.error("PDF Generation error:", err);
+      alert("Failed to generate PDF. Please try again.");
     } finally {
       setDownloadingReportId(null);
     }
@@ -170,38 +163,27 @@ export default function ReportsTable() {
   // ------------------ RENDER CONTENT ------------------
   const renderContent = () => {
     if (isLoading)
-      return (
-        <p className="text-gray-500 text-center py-4">
-          Loading reports...
-        </p>
-      );
+      return <p className="text-gray-500 text-center py-4">Loading reports...</p>;
 
     if (error)
-      return (
-        <p className="text-gray-500 text-center py-4">You do not have any report to view yet.</p>
-      );
+      return <p className="text-gray-500 text-center py-4">{error}</p>;
 
     if (reports.length === 0)
       return (
-    <p className="text-gray-500 text-center py-4">
-      You do not have any report to view yet.
-    </p>
-  );
+        <p className="text-gray-500 text-center py-4">
+          You do not have any report to view yet.
+        </p>
+      );
 
     return reports.map((report) => {
       const isDownloading = downloadingReportId === report.id;
 
       return (
-        <div
-          key={report.id}
-          className="flex justify-between items-center py-4"
-        >
+        <div key={report.id} className="flex justify-between items-center py-4">
           {/* DATE + TIME */}
           <div>
-            <p className="text-gray-800">{report.date}</p>
-            <p className="text-xs text-gray-500">
-              Uploaded at {report.time}
-            </p>
+            <p className="text-gray-800 font-medium">{report.date}</p>
+            <p className="text-xs text-gray-500">Uploaded at {report.time}</p>
           </div>
 
           {/* RISK BADGE */}
@@ -213,24 +195,43 @@ export default function ReportsTable() {
 
           {/* DOWNLOAD BUTTON */}
           <button
-            className="px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition text-sm disabled:opacity-50"
+            className="px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition text-sm disabled:opacity-50 flex items-center gap-2"
             onClick={() => handleDownload(report.id)}
             disabled={isDownloading}
           >
-            {isDownloading ? "Downloading..." : "Download PDF"}
+            {isDownloading ? (
+              <span>Generating...</span>
+            ) : (
+              <>
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                  />
+                </svg>
+                Download PDF
+              </>
+            )}
           </button>
 
           {/* CONSULT / VIEW PRESCRIPTION */}
           {report.consultationStatus === "Pending" ? (
             <button
-              className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition text-sm ml-2"
+              className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition text-sm ml-2 font-medium"
               onClick={() => handleConsult(report.id)}
             >
               Consult Doctor
             </button>
           ) : (
             <button
-              className="px-4 py-2 bg-green-100 text-green-700 rounded hover:bg-green-200 transition text-sm ml-2"
+              className="px-4 py-2 bg-green-100 text-green-700 rounded hover:bg-green-200 transition text-sm ml-2 font-medium"
               onClick={() => handleViewPrescription(report.prescriptionText)}
             >
               View Prescription
@@ -253,14 +254,13 @@ export default function ReportsTable() {
         </p>
 
         <div className="bg-white shadow rounded-lg p-6">
-          {!isLoading && !error && (
-            <p className="text-sm text-gray-500 mb-4">
-              Showing {reports.length}{" "}
-              {reports.length === 1 ? "report" : "reports"}
+          {!isLoading && !error && reports.length > 0 && (
+            <p className="text-sm text-gray-500 mb-4 pb-2 border-b border-gray-100">
+              Showing {reports.length} {reports.length === 1 ? "report" : "reports"}
             </p>
           )}
 
-          <div className="divide-y">{renderContent()}</div>
+          <div className="divide-y divide-gray-100">{renderContent()}</div>
         </div>
       </div>
 

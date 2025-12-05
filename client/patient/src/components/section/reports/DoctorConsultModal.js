@@ -145,7 +145,7 @@ export default function DoctorConsultModal({ onClose, reportId }) {
                   disabled={isBooking}
                   className="bg-[#B55151] p-2 rounded-[8px] text-[12px] text-white disabled:bg-gray-400"
                 >
-                  {isBooking ? "Booking..." : "Book Appointment"}
+                  {isBooking ? "Booking..." : "Select Doctor"}
                 </button>
               </div>
             ))

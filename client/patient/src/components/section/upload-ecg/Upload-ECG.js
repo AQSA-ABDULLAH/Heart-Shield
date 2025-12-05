@@ -192,7 +192,7 @@ export default function Uploader() {
           <h3 className="text-lg font-semibold mb-6">Clinical Information</h3>
 
           <form className="space-y-4" onSubmit={handleSubmit}>
-            <input type="number" placeholder="Age" value={age}
+            <input type="number" placeholder="Age (18 to 120)" value={age}
               onChange={(e) => setAge(e.target.value)}
               className="w-full border p-2 rounded-md" required />
 
@@ -206,8 +206,9 @@ export default function Uploader() {
 
             <input
               type="text"
-              placeholder="Cholesterol (mg/dL)"
+              placeholder="Cholesterol (mg/dL) (e.g. 400/100)"
               value={cholesterol}
+              required
               onChange={(e) => setCholesterol(e.target.value)}
               className="w-full border p-2 rounded-md"
             />
@@ -220,8 +221,8 @@ export default function Uploader() {
               <option>Current</option>
             </select>
 
-            <input type="text" placeholder="Blood Pressure (e.g., 120/80)"
-              value={bloodPressure} onChange={(e) => setBloodPressure(e.target.value)}
+            <input type="text" placeholder="Blood Pressure (e.g. 120/80)"
+              value={bloodPressure} onChange={(e) => setBloodPressure(e.target.value) } required
               className="w-full border p-2 rounded-md" />
 
             <button disabled={loading} type="submit"
