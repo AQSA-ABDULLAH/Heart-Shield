@@ -17,12 +17,12 @@ def load_model():
         nn.Sigmoid()
     )
 
-    model.load_state_dict(touch.load("ecg_cnn_mutlilabel.pth", map_location=device))        
+    model.load_state_dict(torch.load("ecg_cnn_mutlilabel.pth", map_location=device))        
     model = model.to(device)
     model.eval()
     return model
 
-model = load_model
+model = load_model()
 
 # --- 3. PREPROCESSING ---
 transform = transforms.Compose([
@@ -40,6 +40,9 @@ def read_root():
 
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
+    contents = await file.read()
+    image = Image.open(io.BytesIO(contents)).convert("RGB")
+    
     input_tensor = transform(image).unsqueeze(0).to(device)
 
     with torch.no_grad():
