@@ -29,27 +29,25 @@ const getUserIdFromToken = () => {
   }
 };
 
+
 // ------------------ FORMAT REPORT DATA ------------------
+// ReportsTable.js
+
 const formatReportData = (record) => {
+  // ... (Baki code same rahega date/risk waghaira ka) ...
   const dateObj = new Date(record.createdAt);
-
-  const date = dateObj.toLocaleDateString("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
-
-  const time = dateObj.toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: true,
-  });
+  const date = dateObj.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+  const time = dateObj.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
 
   let risk = "Pending";
   let color = "bg-yellow-100 text-yellow-600";
+  let aiPredictions = [];
+  let overallRiskValue = "N/A";
 
   if (record.analysisResult?.status === "Completed") {
-    const riskValue = record.analysisResult.Overall_Risk;
+    const riskValue = record.analysisResult.Overall_Risk || 0;
+    overallRiskValue = (riskValue * 100).toFixed(2) + "%";
+    
     if (riskValue > 0.5) {
       risk = "High Risk";
       color = "bg-red-100 text-red-600";
@@ -57,9 +55,44 @@ const formatReportData = (record) => {
       risk = "Low Risk";
       color = "bg-green-100 text-green-600";
     }
+
+    const cadVal = record.analysisResult.CAD || 0;
+    const hfVal = record.analysisResult.HF || 0;
+    const arrVal = record.analysisResult.ARR || 0;
+
+    aiPredictions = [
+      { label: "Coronary Artery Disease (CAD)", value: (cadVal * 100).toFixed(2) + "%" },
+      { label: "Heart Failure (HF)", value: (hfVal * 100).toFixed(2) + "%" },
+      { label: "Arrhythmia (ARR)", value: (arrVal * 100).toFixed(4) + "%" },
+    ];
   } else if (record.analysisResult?.status === "Failed") {
     risk = "Failed";
     color = "bg-gray-100 text-gray-600";
+  }
+
+  // --- 🛠️ FIX FOR IMAGE PATH ---
+  let ecgImage = null;
+  
+  if (record.ecgFilePath) {
+    // MongoDB path example: "C:\FYP\HeartShield\server\uploads\ecgs\file.png"
+    // Hum "uploads" word dhoond kar uske baad ka hissa lenge.
+    
+    // 1. Normalize slashes (convert \ to /)
+    const normalizedPath = record.ecgFilePath.replace(/\\/g, "/");
+    
+    // 2. Find where 'uploads' starts
+    const uploadsIndex = normalizedPath.indexOf("uploads");
+
+    if (uploadsIndex !== -1) {
+      // 3. Extract part starting from "uploads/..."
+      const relativePath = normalizedPath.substring(uploadsIndex);
+      
+      // 4. Combine with API URL (e.g., http://localhost:5000/uploads/ecgs/file.png)
+      ecgImage = `${process.env.REACT_APP_API_URL}/${relativePath}`;
+    } else {
+      // Fallback if 'uploads' keyword not found in path
+      ecgImage = `${process.env.REACT_APP_API_URL}/${normalizedPath}`;
+    }
   }
 
   return {
@@ -68,6 +101,9 @@ const formatReportData = (record) => {
     time,
     risk,
     color,
+    aiPredictions,
+    overallRiskValue,
+    ecgImage, // Correct URL passed here
     consultationStatus: record.consultationStatus || "Pending",
     prescriptionText: record.prescriptionNotes || null,
   };

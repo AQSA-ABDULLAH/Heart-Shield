@@ -12,7 +12,7 @@ export default function Uploader() {
   const [bloodPressure, setBloodPressure] = useState("");
   const [ecgFile, setEcgFile] = useState(null);
   const [loading, setLoading] = useState(false);
-   const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const getUserIdFromToken = () => {
     try {
@@ -25,8 +25,7 @@ export default function Uploader() {
     }
   };
 
-  const isValidBloodPressure = (value) => /^[0-9]{2,3}\/[0-9]{2,3}$/.test(value);
-  const isValidCholesterol = (value) => /^[0-9]{2,3}\/[0-9]{2,3}$/.test(value);
+  const isBpFormatValid = (value) => /^[0-9]{2,3}\/[0-9]{2,3}$/.test(value);
 
   const handleFileChange = (e) => {
     if (e.target.files?.[0]) {
@@ -78,11 +77,12 @@ export default function Uploader() {
       return;
     }
 
-    if (cholesterol && !isValidCholesterol(cholesterol)){
+    const cholValue = Number(cholesterol);
+    if (!cholesterol || isNaN(cholValue) || cholValue < 0 || cholValue > 400) {
       Swal.fire({
         icon: "warning",
         title: "Invalid Cholesterol Level",
-        text: "Please enter cholesterol between 100 and 400 mg/dL.",
+        text: "Please enter a single value between 0 and 400 mg/dL.",
       });
       return;
     }
@@ -96,11 +96,31 @@ export default function Uploader() {
       return;
     }
 
-    if (bloodPressure && !isValidBloodPressure(bloodPressure)) {
+    if (!bloodPressure || !isBpFormatValid(bloodPressure)) {
+      Swal.fire({
+        icon: "warning",
+        title: "Invalid Blood Pressure Format",
+        text: "Please enter blood pressure in the format '120/80'.",
+      });
+      return;
+    }
+
+    const [systolic, diastolic] = bloodPressure.split('/').map(Number);
+
+    if (diastolic < 20 || diastolic > 300 || systolic > 300 || systolic < 20) {
+      Swal.fire({
+        icon: "warning",
+        title: "Invalid Blood Pressure Range",
+        text: "Blood pressure values must be between 300 and 20.",
+      });
+      return;
+    }
+
+    if (systolic <= diastolic) {
       Swal.fire({
         icon: "warning",
         title: "Invalid Blood Pressure",
-        text: "Please enter valid blood pressure (e.g., 120/80).",
+        text: "Systolic BP (first value/Higher value) must be greater than Diastolic BP (second value/Lower value).",
       });
       return;
     }
@@ -205,8 +225,8 @@ export default function Uploader() {
             </select>
 
             <input
-              type="text"
-              placeholder="Cholesterol (mg/dL) (e.g. 400/100)"
+              type="number"
+              placeholder="Cholesterol (0 - 400 mg/dL)"
               value={cholesterol}
               required
               onChange={(e) => setCholesterol(e.target.value)}
@@ -222,7 +242,7 @@ export default function Uploader() {
             </select>
 
             <input type="text" placeholder="Blood Pressure (e.g. 120/80)"
-              value={bloodPressure} onChange={(e) => setBloodPressure(e.target.value) } required
+              value={bloodPressure} onChange={(e) => setBloodPressure(e.target.value)} required
               className="w-full border p-2 rounded-md" />
 
             <button disabled={loading} type="submit"
