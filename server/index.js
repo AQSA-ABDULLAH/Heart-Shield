@@ -17,6 +17,7 @@ const ecgRoutes = require('./routes/ecgRoutes.js');
 const appointmentRoutes = require('./routes/appointmentRoute.js');
 const notificationRoutes = require('./routes/notificationRoutes.js')
 const dashboardRoutes = require('./routes/dashboardRoute.js');
+const chatRoutes = require('./routes/chatRoute.js');
 
 // Cors
 app.use(cors());
@@ -34,6 +35,7 @@ app.use('/api/doctor', doctorRoutes);
 app.use('/api/ecg', ecgRoutes);
 app.use('/api/appointment', appointmentRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use("/api/chat", chatRoutes);
 
 // For Server Port
 const PORT = process.env.PORT || 5000;

@@ -4,6 +4,7 @@ import {
   FaFileAlt,
   FaBell,
   FaCog,
+  FaComments
 } from "react-icons/fa";
 import { AiFillHome } from "react-icons/ai";
 
@@ -32,5 +33,15 @@ export const Main = [
     icon: <FaCog  size={20}/>,
     text: "Settings",
     route:'/settings'
+  },
+  {
+    icon: <FaComments  size={20}/>,
+    text: "Chat Bot",
+    route:'/chatbot'
+  },
+  {
+    icon: <FaComments  size={20}/>,
+    text: "Messages",
+    route:'/Message'
   },
 ];
